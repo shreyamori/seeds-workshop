@@ -1,11 +1,6 @@
 import 'dotenv/config';
 
-import {
-  addDoc,
-  collection,
-  getDocs,
-  serverTimestamp,
-} from 'firebase/firestore/lite';
+import { addDoc, collection, getDocs } from 'firebase/firestore/lite';
 
 import { db } from '../support/firebase';
 
@@ -16,8 +11,7 @@ async function main() {
     username: 'john',
     profilePictureUrl:
       'https://cdn.midjourney.com/9ed7a655-94a4-4d71-9276-0df8e5042ed0/0_2.png',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: new Date().toISOString(),
   });
 
   const posts = [
@@ -48,8 +42,7 @@ async function main() {
       userId: post.userId,
       imageUrl: post.imageUrl,
       caption: post.caption,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
     });
   }
 
