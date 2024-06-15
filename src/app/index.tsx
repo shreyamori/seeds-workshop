@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore/lite';
+import {
+  collection,
+  getDocs,
+  QueryDocumentSnapshot,
+} from 'firebase/firestore/lite';
 import { Paragraph, YStack } from 'tamagui';
 
 import { db } from '../support/firebase';
 
 export default function App() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Array<QueryDocumentSnapshot>>([]);
   useEffect(() => {
     const getPosts = async () => {
       const postsRef = collection(db, 'posts');
@@ -19,7 +23,7 @@ export default function App() {
     <YStack flex={1} justifyContent="center" alignItems="center">
       <YStack gap={10}>
         {posts.map((post) => (
-          <Paragraph>{post.data().caption}</Paragraph>
+          <Paragraph key={post.id}>{post.data().caption}</Paragraph>
         ))}
       </YStack>
     </YStack>
