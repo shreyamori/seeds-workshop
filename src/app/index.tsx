@@ -4,7 +4,7 @@ import {
   getDocs,
   QueryDocumentSnapshot,
 } from 'firebase/firestore/lite';
-import { Paragraph, YStack } from 'tamagui';
+import { Image, Paragraph, YStack } from 'tamagui';
 
 import { db } from '../support/firebase';
 
@@ -23,7 +23,14 @@ export default function App() {
     <YStack flex={1} justifyContent="center" alignItems="center">
       <YStack gap={10}>
         {posts.map((post) => (
-          <Paragraph key={post.id}>{post.data().caption}</Paragraph>
+          <YStack key={post.id}>
+            <Image
+              width="100%"
+              aspectRatio={1}
+              source={{ uri: post.data().imageUrl }}
+            />
+            <Paragraph key={post.id}>{post.data().caption}</Paragraph>
+          </YStack>
         ))}
       </YStack>
     </YStack>
