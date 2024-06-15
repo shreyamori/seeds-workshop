@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { AuthProvider } from './AuthProvider';
 import { FontProvider } from './FontProvider';
 import { LocalStorageProvider } from './LocalStorageProvider';
 import { ThemeProvider } from './ThemeProvider';
@@ -14,7 +15,9 @@ export function AppProvider(props: Props) {
   return (
     <LocalStorageProvider>
       <FontProvider onInitialized={onInitialized}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </FontProvider>
     </LocalStorageProvider>
   );

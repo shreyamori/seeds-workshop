@@ -1,26 +1,54 @@
-import { collection, getDocs } from 'firebase/firestore/lite';
-import { Button, YStack } from 'tamagui';
+import { Alert } from 'react-native';
+import { router, Stack } from 'expo-router';
+import { signOut } from 'firebase/auth';
+import { Button, Paragraph, YStack } from 'tamagui';
 
-import { db } from '../support/firebase';
+import { useAuth } from '../providers/AuthProvider';
+import { auth } from '../support/firebase';
 
-async function getPosts() {
-  const allPosts = await getDocs(collection(db, 'posts'));
-  return allPosts.docs.map((post) => ({ id: post.id, ...post.data() }));
+async function logout() {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    Alert.alert('Error logging out:', String(error));
+  }
 }
 
 export default function App() {
+  const { user } = useAuth();
   return (
-    <YStack flex={1} justifyContent="center" alignItems="center">
-      <Button
-        onPress={async () => {
-          const posts = await getPosts();
-          for (const post of posts) {
-            console.log('>>', post);
-          }
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: false,
         }}
-      >
-        Get Posts
-      </Button>
-    </YStack>
+      />
+      <YStack flex={1} justifyContent="center" alignItems="center">
+        {user ? (
+          <YStack alignItems="center" gap={16}>
+            <Paragraph>{`Logged in as: ${user.email}`}</Paragraph>
+            <Button onPress={() => logout()}>Logout</Button>
+          </YStack>
+        ) : (
+          <YStack alignItems="center" gap={16}>
+            <Paragraph>Not logged in.</Paragraph>
+            <Button
+              onPress={() => {
+                router.push('/login');
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              onPress={() => {
+                router.push('/signup');
+              }}
+            >
+              Signup
+            </Button>
+          </YStack>
+        )}
+      </YStack>
+    </>
   );
 }
