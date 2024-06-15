@@ -1,23 +1,15 @@
 import 'dotenv/config';
 
-import {
-  addDoc,
-  collection,
-  getDocs,
-  serverTimestamp,
-} from 'firebase/firestore/lite';
-
-import { db } from '../support/firebase';
+import { db } from '../support/schema';
 
 async function main() {
-  const usersRef = collection(db, 'users');
-  const userRef = await addDoc(usersRef, {
+  const userRef = await db.users.add({
     name: 'John',
     username: 'john',
     profilePictureUrl:
       'https://cdn.midjourney.com/9ed7a655-94a4-4d71-9276-0df8e5042ed0/0_2.png',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   });
 
   const posts = [
@@ -41,22 +33,19 @@ async function main() {
     },
   ];
 
-  const postsRef = collection(db, 'posts');
-
   for (const post of posts) {
-    await addDoc(postsRef, {
+    await db.posts.add({
       userId: post.userId,
       imageUrl: post.imageUrl,
       caption: post.caption,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
   }
 
-  const postsSnapshot = await getDocs(postsRef);
-
-  for (const post of postsSnapshot.docs) {
-    console.log(post.id, post.data());
+  const allPosts = await db.posts.all();
+  for (const post of allPosts) {
+    console.log(post.ref.id, post.data);
   }
 }
 

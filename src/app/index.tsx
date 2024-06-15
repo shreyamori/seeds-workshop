@@ -1,21 +1,15 @@
-import { collection, getDocs } from 'firebase/firestore/lite';
 import { Button, YStack } from 'tamagui';
 
-import { db } from '../support/firebase';
-
-async function getPosts() {
-  const allPosts = await getDocs(collection(db, 'posts'));
-  return allPosts.docs.map((post) => ({ id: post.id, ...post.data() }));
-}
+import { db } from '../support/schema';
 
 export default function App() {
   return (
     <YStack flex={1} justifyContent="center" alignItems="center">
       <Button
         onPress={async () => {
-          const posts = await getPosts();
+          const posts = await db.posts.all();
           for (const post of posts) {
-            console.log('>>', post);
+            console.log('>>', { id: post.ref.id, ...post.data });
           }
         }}
       >
